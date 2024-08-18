@@ -6,8 +6,23 @@ async function criptografarSenha(senha) {
         const hash = await bcrypt.hash(senha, saltRounds);
         return hash;
     } catch (error) {
-        throw new Error('Erro ao criptografar a senha: ' + error.message);
+        throw new Error('Erro ao criptografar senha: ' + error.message);
     }
 }
 
-module.exports = { criptografarSenha }
+async function validaSenha(senha, senhaCadastrada) {
+    try {
+
+        const comparador = await bcrypt.compare(senha, senhaCadastrada)
+
+        return comparador
+
+    } catch (error) {
+        throw new Error('Erro ao comparar senha: ' + error.message);
+    }
+}
+
+module.exports = {
+    criptografarSenha,
+    validaSenha
+}

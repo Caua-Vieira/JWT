@@ -1,5 +1,5 @@
 const db = require("../config/database")
-const { criptografarSenha } = require("../security/bcrypt")
+const { criptografarSenha, validaSenha } = require("../security/bcrypt")
 
 async function cadastraUsuario(req, res) {
     try {
@@ -41,6 +41,45 @@ async function cadastraUsuario(req, res) {
     }
 }
 
+async function consultaLogin(req, res) {
+    try {
+        const {
+            nome,
+            senha
+        } = req.params
+
+        const buscaDados = await db.query(`
+        SELECT nome, senha FROM usuarios
+        WHERE nome = '${nome}'    
+        `)
+
+        if (buscaDados.rows.length == 0) {
+            return res.status(406).send({
+                message: "Usuário inexistente"
+            })
+        } else {
+
+            const verificaSenha = await validaSenha(senha, buscaDados.rows[0].senha)
+
+            if (verificaSenha) {
+                return res.status(200).send({
+                    message: "Login efetuado com sucesso"
+                })
+            } else {
+                return res.status(401).send({
+                    message: "Senha inválida"
+                })
+            }
+        }
+
+    } catch (error) {
+        return res.status(500).send({
+            message: "Ocorreu um erro ao tentar validar usuário: " + error.message
+        })
+    }
+}
+
 module.exports = {
-    cadastraUsuario
+    cadastraUsuario,
+    consultaLogin
 }

@@ -1,6 +1,7 @@
 import axios from "axios"
 import { useState } from "react"
 import { Card, Col, Container, Form, Row } from "react-bootstrap"
+import { useNavigate } from "react-router-dom"
 import { toast } from "react-toastify"
 
 function Login() {
@@ -10,6 +11,8 @@ function Login() {
     const [mostraParagCadastro, setMostraParagCadastro] = useState<boolean>(false)
     const [nome, setNome] = useState<string>()
     const [senha, setSenha] = useState<string>()
+
+    const navigate = useNavigate()
 
     function cadastrarUsuario() {
         if (!nome || !senha) {
@@ -35,9 +38,12 @@ function Login() {
     function consultaLogin() {
         axios.get(`http://localhost:8000/consulta/login/${nome}/${senha}`)
             .then(function (resposta) {
-                console.log(resposta)
+                toast.success(resposta.data.message)
+                navigate("/dashboard")
             }).catch(function (erro) {
                 toast.error(erro.response.data.message)
+                setNome("")
+                setSenha("")
             })
     }
 
@@ -89,6 +95,8 @@ function Login() {
                                                 onClick={() => {
                                                     if (nomeBotao === 'Cadastrar') {
                                                         cadastrarUsuario()
+                                                    } else {
+                                                        consultaLogin()
                                                     }
                                                 }}
                                             >
