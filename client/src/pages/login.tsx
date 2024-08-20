@@ -39,7 +39,7 @@ function Login() {
         axios.get(`http://localhost:8000/consulta/login/${nome}/${senha}`)
             .then(function (resposta) {
                 toast.success(resposta.data.message)
-                navigate("/dashboard")
+                navigate(`/dashboard/${nome}`)
             }).catch(function (erro) {
                 toast.error(erro.response.data.message)
                 setNome("")

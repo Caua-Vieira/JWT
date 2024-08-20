@@ -18,7 +18,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Login />} />
 
-          <Route path='/dashboard' element={<Dashboard />} />
+          <Route path='/dashboard/:nomeUsuario' element={<Dashboard />} />
         </Routes>
       </BrowserRouter>
     </>

@@ -62,15 +62,6 @@ async function consultaLogin(req, res) {
             const verificaSenha = await validaSenha(senha, buscaDados.rows[0].senha)
 
             if (verificaSenha) {
-
-                await db.query(`
-                insert into usuarios (
-                ultimo_login
-                ) values (
-                current_timestamp 
-                )
-                `)
-
                 return res.status(200).send({
                     message: "Login efetuado com sucesso"
                 })

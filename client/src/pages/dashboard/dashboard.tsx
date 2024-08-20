@@ -1,19 +1,40 @@
 import axios from "axios";
+import { useEffect } from "react";
 import { Button, Card, Col, Container, Row } from "react-bootstrap";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 
 function Dashboard() {
 
-    const nomeUsuario = "Cauã"; // Exemplo de como você pode puxar o nome do usuário
-    const lastLogin = "2024-08-18 14:30"; // Exemplo de como você pode puxar a última data de login
+    const params = useParams()
+    const navigate = useNavigate()
 
-    function consultaUltimoLogin() {
-        axios.get(`http://localhost:8000/consulta/${nomeUsuario}`)
+    const nomeUsuario = params.nomeUsuario
+    const lastLogin = "2024-08-18 14:30";
+
+    function gravaLogin() {
+        axios.put(`http://localhost:8000/grava/login`, {
+            nomeUsuario
+        }).then(function (resposta) {
+            toast.success(resposta.data.message)
+            navigate(-1)
+        }).catch(function (erro) {
+            toast.error(erro.response.data.message)
+        })
+    }
+
+    function buscaInfosUsuario() {
+        axios.get(`http://localhost:8000/busca/infos/${nomeUsuario}`)
             .then(function (resposta) {
-
+                console.log(resposta)
             }).catch(function (erro) {
-
+                toast.error(erro.response.data.message)
             })
     }
+
+    useEffect(() => {
+        buscaInfosUsuario()
+    }, [])
 
     return (
         <Container className="mt-5">
@@ -39,7 +60,11 @@ function Dashboard() {
                                     </Button>
                                 </div>
                                 <div className="col-6">
-                                    <Button variant="danger" className="mt-4 w-100">
+                                    <Button
+                                        variant="danger"
+                                        className="mt-4 w-100"
+                                        onClick={gravaLogin}
+                                    >
                                         Logout
                                     </Button>
                                 </div>
