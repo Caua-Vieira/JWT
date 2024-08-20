@@ -27,19 +27,24 @@ async function buscaInfosUsuario(req, res) {
         const nomeUsuario = req.params.nomeUsuario
 
         const buscaDados = await db.query(`
-        select email, data_criacao from usuarios u 
+        select email, data_criacao, ultimo_login from usuarios u 
         where nome = '${nomeUsuario}'    
         `)
 
         const transformDados = buscaDados.rows.map((item) => {
 
-            let dataCriacao = item.data_criacao.toISOString().split('T')
+            let horario = item.ultimo_login.toISOString().split('T')[0]
+            let [year, month, day] = horario.split('-')
+            horario = `${day}/${month}/${year}`
+
+            let dataCriacao = item.data_criacao.toISOString().split('T')[0];
             let [ano, mes, dia] = dataCriacao.split('-')
             dataCriacao = `${dia}/${mes}/${ano}`
 
             return {
                 ...item,
-                data_criacao: dataCriacao
+                data_criacao: dataCriacao,
+                ultimo_login: horario
             }
         })
 

@@ -11,17 +11,19 @@ function Login() {
     const [mostraParagCadastro, setMostraParagCadastro] = useState<boolean>(false)
     const [nome, setNome] = useState<string>()
     const [senha, setSenha] = useState<string>()
+    const [email, setEmail] = useState<string>()
 
     const navigate = useNavigate()
 
     function cadastrarUsuario() {
-        if (!nome || !senha) {
+        if (!nome || !senha || !email) {
             toast.info("Preencha nome e senha para cadastrar usuário")
         }
 
         axios.post(`http://localhost:8000/cadastra/usuario`, {
             nome,
-            senha
+            senha,
+            email
         }).then(function (resposta) {
             toast.success(resposta.data.message)
             setMostraParagLogin(true)
@@ -29,6 +31,7 @@ function Login() {
             setNome("Login")
             setNome("")
             setSenha("")
+            setEmail("")
         }).catch(function (erro) {
             toast.error(erro.response.data.message)
             setNome("")
@@ -56,8 +59,24 @@ function Login() {
                         <Card className="p-4">
                             <Form>
                                 <Card.Body>
-                                    <h4 className="text-center">Cadastro ou Acesso</h4>
+                                    <h4 className="text-center">{mostraParagCadastro === false ? 'Cadastro' : 'Acesso'}</h4>
+
                                     <form>
+                                        <Row className="mt-3">
+                                            <div className="form-group" hidden={mostraParagCadastro}>
+                                                <label className="form-label">Email</label>
+                                                <input
+                                                    type="text"
+                                                    className="form-control"
+                                                    placeholder="Insira o seu email"
+                                                    value={email}
+                                                    onChange={(e) => {
+                                                        setEmail(e.target.value)
+                                                    }}
+                                                />
+                                            </div>
+                                        </Row>
+
                                         <Row className="mt-3">
                                             <div className="form-group">
                                                 <label className="form-label">Nome</label>
@@ -107,7 +126,7 @@ function Login() {
                                         <Row className="mt-3">
                                             <div hidden={mostraParagLogin} className="text-center">
                                                 <p>
-                                                    Ainda não possui login?{' '}
+                                                    Ainda não possui cadastro?{' '}
                                                     <button
                                                         type="button"
                                                         onClick={() => {

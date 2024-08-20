@@ -3,9 +3,11 @@ const { criptografarSenha, validaSenha } = require("../security/bcrypt")
 
 async function cadastraUsuario(req, res) {
     try {
+
         const {
             nome,
-            senha
+            senha,
+            email
         } = req.body
 
         const senhaCriptografada = await criptografarSenha(senha)
@@ -22,10 +24,12 @@ async function cadastraUsuario(req, res) {
             await db.query(`
                 insert into usuarios (
                 nome,
-                senha
+                senha,
+                email
                 ) values (
                 '${nome}',
-                '${senhaCriptografada}'
+                '${senhaCriptografada}',
+                '${email}'
                 )    
             `)
 

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Button, Card, Col, Container, Row } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -10,7 +10,9 @@ function Dashboard() {
     const navigate = useNavigate()
 
     const nomeUsuario = params.nomeUsuario
-    const lastLogin = "2024-08-18 14:30";
+    const [email, setEmail] = useState<string>()
+    const [ultimoLogin, setUltimoLogin] = useState<string>()
+    const [dataCriacao, setDataCriacao] = useState<string>()
 
     function gravaLogin() {
         axios.put(`http://localhost:8000/grava/login`, {
@@ -26,7 +28,9 @@ function Dashboard() {
     function buscaInfosUsuario() {
         axios.get(`http://localhost:8000/busca/infos/${nomeUsuario}`)
             .then(function (resposta) {
-                console.log(resposta)
+                setEmail(resposta.data.data[0].email)
+                setUltimoLogin(resposta.data.data[0].ultimo_login)
+                setDataCriacao(resposta.data.data[0].data_criacao)
             }).catch(function (erro) {
                 toast.error(erro.response.data.message)
             })
@@ -40,14 +44,16 @@ function Dashboard() {
         <Container className="mt-5">
             <Card className="p-4">
                 <h2 className="text-center">Bem-vindo(a), {nomeUsuario}!</h2>
-                <p className="text-center">Último login: {lastLogin}</p>
+                <p className="text-center">Último login: {ultimoLogin}</p>
 
                 <Row className="mt-4">
                     <Col md={6} className="text-center">
                         <Card className="p-3">
                             <h5>Dados do Usuário</h5>
                             <p>Nome: {nomeUsuario}</p>
-                            <p>Email: exemplo@exemplo.com</p>
+                            <p>Email: {email}</p>
+                            <p>Data de criação: {dataCriacao}</p>
+                            <p>Último login: {dataCriacao}</p>
                         </Card>
                     </Col>
                     <Col md={6} className="text-center">
