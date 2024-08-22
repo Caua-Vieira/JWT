@@ -1,5 +1,6 @@
 const db = require("../config/database")
 const { criptografarSenha, validaSenha } = require("../security/bcrypt")
+const { criarJWT } = require("../security/jwt")
 
 async function cadastraUsuario(req, res) {
     try {
@@ -53,7 +54,7 @@ async function consultaLogin(req, res) {
         } = req.params
 
         const buscaDados = await db.query(`
-        SELECT nome, senha FROM usuarios
+        SELECT id, nome, senha FROM usuarios
         WHERE nome = '${nome}'    
         `)
 
@@ -66,8 +67,12 @@ async function consultaLogin(req, res) {
             const verificaSenha = await validaSenha(senha, buscaDados.rows[0].senha)
 
             if (verificaSenha) {
+
+                const token = criarJWT(buscaDados.rows[0].id)
+
                 return res.status(200).send({
-                    message: "Login efetuado com sucesso"
+                    message: "Login efetuado com sucesso",
+                    token: token
                 })
             } else {
                 return res.status(401).send({

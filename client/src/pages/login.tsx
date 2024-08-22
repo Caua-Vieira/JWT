@@ -41,6 +41,7 @@ function Login() {
     function consultaLogin() {
         axios.get(`http://localhost:8000/consulta/login/${nome}/${senha}`)
             .then(function (resposta) {
+                sessionStorage.setItem("token", resposta.data.token)
                 toast.success(resposta.data.message)
                 navigate(`/dashboard/${nome}`)
             }).catch(function (erro) {
@@ -100,6 +101,11 @@ function Login() {
                                                     className="form-control"
                                                     placeholder="Insira sua senha"
                                                     value={senha}
+                                                    onKeyDown={(e) => {
+                                                        if (e.key === 'Enter') {
+                                                            consultaLogin()
+                                                        }
+                                                    }}
                                                     onChange={(e) => {
                                                         setSenha(e.target.value)
                                                     }}

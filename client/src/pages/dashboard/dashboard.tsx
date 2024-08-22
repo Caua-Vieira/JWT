@@ -9,14 +9,23 @@ function Dashboard() {
     const params = useParams()
     const navigate = useNavigate()
 
+    const token = sessionStorage.getItem("token")
+
     const nomeUsuario = params.nomeUsuario
     const [email, setEmail] = useState<string>()
     const [ultimoLogin, setUltimoLogin] = useState<string>()
     const [dataCriacao, setDataCriacao] = useState<string>()
+    const [expiracaoToken, setExpiracaoToken] = useState<string>()
+    const [idUsuario, setIdUsuario] = useState<number>()
+    const [criacaoToken, setCriacaoToken] = useState<string>()
 
     function gravaLogin() {
         axios.put(`http://localhost:8000/grava/login`, {
             nomeUsuario
+        }, {
+            headers: {
+                Authorization: token
+            }
         }).then(function (resposta) {
             toast.success(resposta.data.message)
             navigate(-1)
@@ -26,8 +35,15 @@ function Dashboard() {
     }
 
     function buscaInfosUsuario() {
-        axios.get(`http://localhost:8000/busca/infos/${nomeUsuario}`)
+        axios.get(`http://localhost:8000/busca/infos/${nomeUsuario}`, {
+            headers: {
+                Authorization: token
+            }
+        })
             .then(function (resposta) {
+                setExpiracaoToken(resposta.data.dadosToken.expiracao)
+                setCriacaoToken(resposta.data.dadosToken.criacao)
+                setIdUsuario(resposta.data.dadosToken.idUsuario)
                 setEmail(resposta.data.data[0].email)
                 setUltimoLogin(resposta.data.data[0].ultimo_login)
                 setDataCriacao(resposta.data.data[0].data_criacao)
@@ -53,7 +69,7 @@ function Dashboard() {
                             <p>Nome: {nomeUsuario}</p>
                             <p>Email: {email}</p>
                             <p>Data de criação: {dataCriacao}</p>
-                            <p>Último login: {dataCriacao}</p>
+                            <p>Último login: {ultimoLogin}</p>
                         </Card>
                     </Col>
                     <Col md={6} className="text-center">
@@ -69,7 +85,10 @@ function Dashboard() {
                                     <Button
                                         variant="danger"
                                         className="mt-4 w-100"
-                                        onClick={gravaLogin}
+                                        onClick={() => {
+                                            sessionStorage.removeItem("token");
+                                            gravaLogin()
+                                        }}
                                     >
                                         Logout
                                     </Button>
@@ -83,8 +102,9 @@ function Dashboard() {
                     <Col>
                         <Card className="p-3">
                             <h5>Dados do Token JWT</h5>
-                            <p>Token expira em: 2024-08-18 16:30</p>
-                            <p>Usuário ID: 12345</p>
+                            <p>Token gerado em: {criacaoToken}</p>
+                            <p>Token expira em: {expiracaoToken}</p>
+                            <p>Usuário ID: {idUsuario}</p>
                         </Card>
                     </Col>
                 </Row>
