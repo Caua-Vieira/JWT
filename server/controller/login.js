@@ -14,12 +14,12 @@ async function cadastraUsuario(req, res) {
         const senhaCriptografada = await criptografarSenha(senha)
 
         const verificaNomeUsuario = await db.query(`
-        SELECT nome FROM usuarios WHERE nome = '${nome}'    
+        SELECT email FROM usuarios WHERE nome = '${nome}'    
         `)
 
         if (verificaNomeUsuario.rows.length != 0) {
             return res.status(406).send({
-                message: "Nome de usuário já existente"
+                message: "Email já cadastrado"
             })
         } else {
             await db.query(`

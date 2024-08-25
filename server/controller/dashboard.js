@@ -1,5 +1,6 @@
 const db = require("../config/database")
 const { resgatarDadosToken } = require("../security/jwt")
+const { criptografarSenha } = require("../security/bcrypt")
 
 async function logout(req, res) {
     try {
@@ -70,7 +71,45 @@ async function buscaInfosUsuario(req, res) {
     }
 }
 
+async function alterarSenha(req, res) {
+    try {
+        const {
+            email,
+            confirmacaoSenha
+        } = req.body
+
+        const verificaEmail = await db.query(`
+        SELECT email FROM usuarios WHERE email = '${email}'   
+        `)
+
+        if (verificaEmail.rows.length == 0) {
+            return res.status(406).send({
+                message: "Email não cadastrado"
+            })
+        } else {
+
+            const senhaCriptografada = await criptografarSenha(confirmacaoSenha)
+
+            await db.query(`
+            UPDATE usuarios 
+            SET senha = '${senhaCriptografada}'
+            WHERE email = '${email}'
+            `)
+
+            return res.status(200).send({
+                message: "Senha alterada com sucesso"
+            })
+        }
+
+    } catch (error) {
+        return res.status(500).send({
+            message: "Ocorreu um erro ao tentar alterar senha: " + error.message
+        })
+    }
+}
+
 module.exports = {
     logout,
-    buscaInfosUsuario
+    buscaInfosUsuario,
+    alterarSenha
 }

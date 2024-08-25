@@ -17,7 +17,7 @@ function Login() {
 
     function cadastrarUsuario() {
         if (!nome || !senha || !email) {
-            toast.info("Preencha nome e senha para cadastrar usuário")
+            return toast.info("Preencha nome e senha para cadastrar usuário")
         }
 
         axios.post(`http://localhost:8000/cadastra/usuario`, {
@@ -58,115 +58,114 @@ function Login() {
                 <Row className="w-100 justify-content-center">
                     <Col xs={12} sm={8} md={6} lg={5}>
                         <Card className="p-4">
-                            <Form>
-                                <Card.Body>
-                                    <h4 className="text-center">{mostraParagCadastro === false ? 'Cadastro' : 'Acesso'}</h4>
+                            <Card.Body>
+                                <h4 className="text-center">{mostraParagCadastro === false ? 'Cadastro' : 'Acesso'}</h4>
 
-                                    <form>
-                                        <Row className="mt-3">
-                                            <div className="form-group" hidden={mostraParagCadastro}>
-                                                <label className="form-label">Email</label>
-                                                <input
-                                                    type="text"
-                                                    className="form-control"
-                                                    placeholder="Insira o seu email"
-                                                    value={email}
-                                                    onChange={(e) => {
-                                                        setEmail(e.target.value)
-                                                    }}
-                                                />
-                                            </div>
-                                        </Row>
+                                <Form>
+                                    <Row className="mt-3">
+                                        <div className="form-group" hidden={mostraParagCadastro}>
+                                            <label className="form-label">Email</label>
+                                            <input
+                                                type="email"
+                                                className="form-control"
+                                                placeholder="Insira o seu email"
+                                                value={email}
+                                                onChange={(e) => {
+                                                    setEmail(e.target.value)
+                                                }}
+                                            />
+                                        </div>
+                                    </Row>
 
-                                        <Row className="mt-3">
-                                            <div className="form-group">
-                                                <label className="form-label">Nome</label>
-                                                <input
-                                                    type="text"
-                                                    className="form-control"
-                                                    placeholder="Insira o nome de usuário"
-                                                    value={nome}
-                                                    onChange={(e) => {
-                                                        setNome(e.target.value)
-                                                    }}
-                                                />
-                                            </div>
-                                        </Row>
+                                    <Row className="mt-3">
+                                        <div className="form-group">
+                                            <label className="form-label">Nome</label>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                placeholder="Insira o nome de usuário"
+                                                value={nome}
+                                                onChange={(e) => {
+                                                    setNome(e.target.value)
+                                                }}
+                                            />
+                                        </div>
+                                    </Row>
 
-                                        <Row className="mt-3">
-                                            <div className="form-group">
-                                                <label className="form-label">Senha</label>
-                                                <input
-                                                    type="password"
-                                                    className="form-control"
-                                                    placeholder="Insira sua senha"
-                                                    value={senha}
-                                                    onKeyDown={(e) => {
-                                                        if (e.key === 'Enter') {
-                                                            consultaLogin()
-                                                        }
-                                                    }}
-                                                    onChange={(e) => {
-                                                        setSenha(e.target.value)
-                                                    }}
-                                                />
-                                            </div>
-                                        </Row>
-
-                                        <Row className="mt-3">
-                                            <button
-                                                type="button"
-                                                className="mt-2 btn btn-primary"
-                                                onClick={() => {
-                                                    if (nomeBotao === 'Cadastrar') {
-                                                        cadastrarUsuario()
-                                                    } else {
+                                    <Row className="mt-3">
+                                        <div className="form-group">
+                                            <label className="form-label">Senha</label>
+                                            <input
+                                                type="password"
+                                                className="form-control"
+                                                placeholder="Insira sua senha"
+                                                value={senha}
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Enter') {
                                                         consultaLogin()
                                                     }
                                                 }}
-                                            >
-                                                {nomeBotao}
-                                            </button>
-                                        </Row>
+                                                onChange={(e) => {
+                                                    setSenha(e.target.value)
+                                                }}
+                                            />
+                                        </div>
+                                    </Row>
 
-                                        <Row className="mt-3">
-                                            <div hidden={mostraParagLogin} className="text-center">
-                                                <p>
-                                                    Ainda não possui cadastro?{' '}
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => {
-                                                            setNomeBotao("Cadastrar")
-                                                            setMostraParagCadastro(false)
-                                                            setMostraParagLogin(true)
-                                                        }}
-                                                        className="mb-1 btn btn-link p-0"
-                                                    >
-                                                        Clique aqui
-                                                    </button>
-                                                </p>
-                                            </div>
+                                    <Row className="mt-3">
+                                        <button
+                                            type="button"
+                                            className="mt-2 btn btn-primary"
+                                            onClick={() => {
+                                                if (nomeBotao === 'Cadastrar') {
+                                                    cadastrarUsuario()
+                                                } else {
+                                                    consultaLogin()
+                                                }
+                                            }}
+                                        >
+                                            {nomeBotao}
+                                        </button>
+                                    </Row>
 
-                                            <div hidden={mostraParagCadastro} className="text-center">
-                                                <p>
-                                                    Deseja fazer login?{' '}
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => {
-                                                            setNomeBotao("Login")
-                                                            setMostraParagCadastro(true)
-                                                            setMostraParagLogin(false)
-                                                        }}
-                                                        className="mb-1 btn btn-link p-0"
-                                                    >
-                                                        Clique aqui
-                                                    </button>
-                                                </p>
-                                            </div>
-                                        </Row>
-                                    </form>
-                                </Card.Body>
-                            </Form>
+                                    <Row className="mt-3">
+                                        <div hidden={mostraParagLogin} className="text-center">
+                                            <p>
+                                                Ainda não possui cadastro?{' '}
+                                                <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                        setNomeBotao("Cadastrar")
+                                                        setMostraParagCadastro(false)
+                                                        setMostraParagLogin(true)
+                                                    }}
+                                                    className="mb-1 btn btn-link p-0"
+                                                >
+                                                    Clique aqui
+                                                </button>
+                                            </p>
+                                        </div>
+
+                                        <div hidden={mostraParagCadastro} className="text-center">
+                                            <p>
+                                                Deseja fazer login?{' '}
+                                                <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                        setNomeBotao("Login")
+                                                        setMostraParagCadastro(true)
+                                                        setMostraParagLogin(false)
+                                                    }}
+                                                    className="mb-1 btn btn-link p-0"
+                                                >
+                                                    Clique aqui
+                                                </button>
+                                            </p>
+                                        </div>
+                                    </Row>
+                                </Form>
+
+                            </Card.Body>
                         </Card>
                     </Col>
                 </Row>
