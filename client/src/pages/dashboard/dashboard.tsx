@@ -64,6 +64,25 @@ function Dashboard() {
             })
     }
 
+    function enviaEmailConfirmacao() {
+        axios.post(`http://localhost:8000/envia/email/confirmacao`, {
+            email
+        }, {
+            headers: {
+                Authorization: token
+            }
+        }).then(function (resposta) {
+            toast.success(resposta.data.message);
+        }).catch(function (erro) {
+            if (erro.response.status === 403) {
+                toast.error(erro.response.data.message)
+                navigate("/")
+            } else {
+                toast.error(erro.response.data.message)
+            }
+        })
+    }
+
     useEffect(() => {
         buscaInfosUsuario()
     }, [])
@@ -121,7 +140,7 @@ function Dashboard() {
                                 <h5>Dados do Token JWT</h5>
                                 <p>Token gerado em: {criacaoToken}</p>
                                 <p>Token expira em: {expiracaoToken}</p>
-                                <p>ID do usuãrio: {idUsuario}</p>
+                                <p>ID do usuário: {idUsuario}</p>
                             </Card>
                         </Col>
                     </Row>
