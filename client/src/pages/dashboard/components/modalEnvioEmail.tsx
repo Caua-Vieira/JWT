@@ -4,41 +4,31 @@ import { Button, Container, Form, Modal, Row } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-interface ModalAlterarSenhaProps {
+interface ModalEnvioEmailProps {
     isOpen: boolean;
     fecharModal: () => void
     token: string
 }
 
-const ModalAlterarSenha: React.FC<ModalAlterarSenhaProps> = ({
+const ModalEnvioEmail: React.FC<ModalEnvioEmailProps> = ({
     isOpen,
     fecharModal,
     token
 }) => {
 
     const [email, setEmail] = useState<string>()
-    const [novaSenha, setNovaSenha] = useState<string>()
-    const [confirmacaoSenha, setConfirmacaoSenha] = useState<string>()
 
     const navigate = useNavigate()
 
-    function alterarSenha() {
-        if (!email || !novaSenha || !confirmacaoSenha) {
-            return toast.info("Preencha todos os campos para alterar senha")
-        } else if (novaSenha !== confirmacaoSenha) {
-            return toast.info("As senhas são diferentes")
-        }
-
-        axios.put(`http://localhost:8000/alterar/senha`, {
-            email,
-            confirmacaoSenha
+    function enviaEmailConfirmacao() {
+        axios.post(`http://localhost:8000/envia/email/confirmacao`, {
+            email
         }, {
             headers: {
                 Authorization: token
             }
         }).then(function (resposta) {
             toast.success(resposta.data.message)
-            fecharModal()
         }).catch(function (erro) {
             if (erro.response.status === 403) {
                 toast.error(erro.response.data.message)
@@ -57,13 +47,11 @@ const ModalAlterarSenha: React.FC<ModalAlterarSenhaProps> = ({
                 show={isOpen}
                 onShow={() => {
                     setEmail("")
-                    setNovaSenha("")
-                    setConfirmacaoSenha("")
                 }}
             >
 
                 <Modal.Header className="bg-white justify-content-center">
-                    <Modal.Title className="w-100 text-center text-dark">{"Alterar senha"}</Modal.Title>
+                    <Modal.Title className="w-100 text-center text-dark">{"Enviar e-mail para alteração"}</Modal.Title>
                     <i
                         className="bi bi-x-circle"
                         style={{ fontSize: '2rem', cursor: 'pointer' }}
@@ -74,7 +62,7 @@ const ModalAlterarSenha: React.FC<ModalAlterarSenhaProps> = ({
                 </Modal.Header >
                 <Modal.Body className="bg-white">
                     <Container>
-                        <h6 className="text-center">Preencha os dados abaixo para alterar sua senha:</h6>
+                        <h6 className="text-center">Preencha o e-mail abaixo para enviarmos a confirmação de alteração de senha:</h6>
 
                         <Row className="mt-3">
                             <div className="form-group">
@@ -92,35 +80,6 @@ const ModalAlterarSenha: React.FC<ModalAlterarSenhaProps> = ({
                             </div>
                         </Row>
 
-                        <Row className="mt-3">
-                            <div className="form-group">
-                                <label className="form-label">Nova senha</label>
-                                <input
-                                    type="password"
-                                    className="form-control"
-                                    placeholder="Insira a nova senha"
-                                    value={novaSenha}
-                                    onChange={(e) => {
-                                        setNovaSenha(e.target.value)
-                                    }}
-                                />
-                            </div>
-                        </Row>
-
-                        <Row className="mt-3">
-                            <div className="form-group">
-                                <label className="form-label">Confirmação de senha</label>
-                                <input
-                                    type="password"
-                                    className="form-control"
-                                    placeholder="Confirme a nova senha"
-                                    value={confirmacaoSenha}
-                                    onChange={(e) => {
-                                        setConfirmacaoSenha(e.target.value)
-                                    }}
-                                />
-                            </div>
-                        </Row>
                     </Container>
 
                 </Modal.Body>
@@ -130,9 +89,9 @@ const ModalAlterarSenha: React.FC<ModalAlterarSenhaProps> = ({
                         <Button
                             variant="primary"
                             className="me-2"
-                            onClick={alterarSenha}
+                            onClick={enviaEmailConfirmacao}
                         >
-                            <i className="bi bi-save"></i> Salvar
+                            <i className="bi bi-save"></i> Enviar
                         </Button>
 
                         <Button
@@ -153,4 +112,4 @@ const ModalAlterarSenha: React.FC<ModalAlterarSenhaProps> = ({
 
 }
 
-export default ModalAlterarSenha
+export default ModalEnvioEmail

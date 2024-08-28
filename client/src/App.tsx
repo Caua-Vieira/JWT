@@ -6,6 +6,7 @@ import Login from './pages/login';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Dashboard from './pages/dashboard/dashboard';
+import AlterarSenha from './pages/dashboard/components/alterarSenha';
 
 
 function App() {
@@ -19,6 +20,8 @@ function App() {
           <Route path="/" element={<Login />} />
 
           <Route path='/dashboard/:nomeUsuario' element={<Dashboard />} />
+
+          <Route path='/alterar/senha' element={<AlterarSenha />} />
         </Routes>
       </BrowserRouter>
     </>

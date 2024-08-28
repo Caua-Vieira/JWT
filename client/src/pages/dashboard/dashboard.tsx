@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Button, Card, Col, Container, Row } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import ModalAlterarSenha from "./components/modalAlterarSenha";
+import ModalEnvioEmail from "./components/modalEnvioEmail";
 
 function Dashboard() {
 
@@ -164,7 +164,7 @@ function Dashboard() {
                 </Card>
             </Container>
 
-            <ModalAlterarSenha
+            <ModalEnvioEmail
                 isOpen={mostraModalAlterarSenha}
                 fecharModal={() => { setMostraModalAlterarSenha(false) }}
                 token={token}
