@@ -8,6 +8,4 @@ routesDashboard.put("/grava/login", verificaJWT, logout)
 routesDashboard.get("/busca/infos/:nomeUsuario", verificaJWT, buscaInfosUsuario)
 routesDashboard.get("/alterar/senha", verificaJWT, alterarSenha)
 
-routesDashboard.post("/envia/email/confirmacao", verificaJWT, enviarEmail)
-
 module.exports = routesDashboard

@@ -1,14 +1,14 @@
 import axios from "axios"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Card, Col, Container, Form, Row } from "react-bootstrap"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { toast } from "react-toastify"
 
 function Login() {
 
     const [nomeBotao, setNomeBotao] = useState<string>("Cadastrar")
-    const [mostraParagLogin, setMostraParagLogin] = useState<boolean>(true)
-    const [mostraParagCadastro, setMostraParagCadastro] = useState<boolean>(false)
+    const [mostraParaLogin, setMostraParaLogin] = useState<boolean>(true)
+    const [mostraParaCadastro, setMostraParaCadastro] = useState<boolean>(false)
     const [nome, setNome] = useState<string>()
     const [senha, setSenha] = useState<string>()
     const [email, setEmail] = useState<string>()
@@ -26,8 +26,8 @@ function Login() {
             email
         }).then(function (resposta) {
             toast.success(resposta.data.message)
-            setMostraParagLogin(true)
-            setMostraParagCadastro(false)
+            setMostraParaLogin(true)
+            setMostraParaCadastro(false)
             setNome("Login")
             setNome("")
             setSenha("")
@@ -59,11 +59,11 @@ function Login() {
                     <Col xs={12} sm={8} md={6} lg={5}>
                         <Card className="p-4">
                             <Card.Body>
-                                <h4 className="text-center">{mostraParagCadastro === false ? 'Cadastro' : 'Acesso'}</h4>
+                                <h4 className="text-center">{mostraParaCadastro === false ? 'Cadastro' : 'Acesso'}</h4>
 
                                 <Form>
                                     <Row className="mt-3">
-                                        <div className="form-group" hidden={mostraParagCadastro}>
+                                        <div className="form-group" hidden={mostraParaCadastro}>
                                             <label className="form-label">Email</label>
                                             <input
                                                 type="email"
@@ -129,15 +129,15 @@ function Login() {
                                     </Row>
 
                                     <Row className="mt-3">
-                                        <div hidden={mostraParagLogin} className="text-center">
+                                        <div hidden={mostraParaLogin} className="text-center">
                                             <p>
                                                 Ainda não possui cadastro?{' '}
                                                 <button
                                                     type="button"
                                                     onClick={() => {
                                                         setNomeBotao("Cadastrar")
-                                                        setMostraParagCadastro(false)
-                                                        setMostraParagLogin(true)
+                                                        setMostraParaCadastro(false)
+                                                        setMostraParaLogin(true)
                                                     }}
                                                     className="mb-1 btn btn-link p-0"
                                                 >
@@ -146,15 +146,15 @@ function Login() {
                                             </p>
                                         </div>
 
-                                        <div hidden={mostraParagCadastro} className="text-center">
+                                        <div hidden={mostraParaCadastro} className="text-center">
                                             <p>
                                                 Deseja fazer login?{' '}
                                                 <button
                                                     type="button"
                                                     onClick={() => {
                                                         setNomeBotao("Login")
-                                                        setMostraParagCadastro(true)
-                                                        setMostraParagLogin(false)
+                                                        setMostraParaCadastro(true)
+                                                        setMostraParaLogin(false)
                                                     }}
                                                     className="mb-1 btn btn-link p-0"
                                                 >

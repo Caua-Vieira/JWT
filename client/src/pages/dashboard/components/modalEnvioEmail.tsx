@@ -17,18 +17,23 @@ const ModalEnvioEmail: React.FC<ModalEnvioEmailProps> = ({
 }) => {
 
     const [email, setEmail] = useState<string>()
+    const [processando, setProcessando] = useState<boolean>(false)
 
     const navigate = useNavigate()
 
     function enviaEmailConfirmacao() {
+        setProcessando(true)
         axios.post(`http://localhost:8000/envia/email/confirmacao`, {
-            email
+            email,
+            token
         }, {
             headers: {
                 Authorization: token
-            }
+            },
+            withCredentials: true
         }).then(function (resposta) {
             toast.success(resposta.data.message)
+            fecharModal()
         }).catch(function (erro) {
             if (erro.response.status === 403) {
                 toast.error(erro.response.data.message)
@@ -36,6 +41,8 @@ const ModalEnvioEmail: React.FC<ModalEnvioEmailProps> = ({
             } else {
                 toast.error(erro.response.data.message)
             }
+        }).finally(function () {
+            setProcessando(false)
         })
     }
 
@@ -76,6 +83,11 @@ const ModalEnvioEmail: React.FC<ModalEnvioEmailProps> = ({
                                     onChange={(e) => {
                                         setEmail(e.target.value)
                                     }}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter' && !processando) {
+                                            enviaEmailConfirmacao()
+                                        }
+                                    }}
                                 />
                             </div>
                         </Row>
@@ -89,7 +101,11 @@ const ModalEnvioEmail: React.FC<ModalEnvioEmailProps> = ({
                         <Button
                             variant="primary"
                             className="me-2"
-                            onClick={enviaEmailConfirmacao}
+                            onClick={() => {
+                                if (!processando) {
+                                    enviaEmailConfirmacao()
+                                }
+                            }}
                         >
                             <i className="bi bi-save"></i> Enviar
                         </Button>
