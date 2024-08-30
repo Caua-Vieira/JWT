@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Button, Container, Form, Modal, Row } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import ModalCarregando from "../../../components/modalCarregando";
 
 interface ModalEnvioEmailProps {
     isOpen: boolean;
@@ -18,11 +19,13 @@ const ModalEnvioEmail: React.FC<ModalEnvioEmailProps> = ({
 
     const [email, setEmail] = useState<string>()
     const [processando, setProcessando] = useState<boolean>(false)
+    const [mostraModalCarregando, setMostraModalCarregando] = useState<boolean>(false)
 
     const navigate = useNavigate()
 
     function enviaEmailConfirmacao() {
         setProcessando(true)
+        setMostraModalCarregando(true)
         axios.post(`http://localhost:8000/envia/email/confirmacao`, {
             email,
             token
@@ -43,6 +46,7 @@ const ModalEnvioEmail: React.FC<ModalEnvioEmailProps> = ({
             }
         }).finally(function () {
             setProcessando(false)
+            setMostraModalCarregando(false)
         })
     }
 
@@ -120,9 +124,12 @@ const ModalEnvioEmail: React.FC<ModalEnvioEmailProps> = ({
                     </div>
 
                 </Modal.Footer>
-
-
             </Modal>
+
+            <ModalCarregando
+                isOpen={mostraModalCarregando}
+                mensagem="Enviando e-mail..."
+            />
         </>
     )
 

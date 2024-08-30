@@ -58,14 +58,13 @@ function UsuarioAutenticacao() {
     const token = Cookies.get('tokenAcesso');
 
     function alterarSenha() {
-
         if (!senha || !confirmacaoSenha) {
             return toast.info("Preencha todos os campos para alterar senha")
         } else if (senha !== confirmacaoSenha) {
             return toast.info("As senhas são diferentes")
         }
-        console.log(token)
-        axios.put(`http://localhost:8000/alterar/senha`, {
+
+        axios.put(`http://localhost:8000/alterar/senha/usuario`, {
             confirmacaoSenha,
             token
         }, {
@@ -74,6 +73,7 @@ function UsuarioAutenticacao() {
             }
         }).then(function (resposta) {
             toast.success(resposta.data.message)
+            sessionStorage.setItem("token", resposta.data.token)
             navigate(`/dashboard/${resposta.data.nome}`)
         }).catch(function (erro) {
             if (erro.response.status === 403) {

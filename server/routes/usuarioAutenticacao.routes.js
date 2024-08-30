@@ -5,6 +5,6 @@ const routes = express.Router()
 
 routes.post("/cadastra/usuario", cadastraUsuario)
 routes.get("/consulta/login/:nome/:senha", consultaLogin)
-routes.put("/alterar/senha", verificaJWT, alterarSenha)
+routes.put("/alterar/senha/usuario", verificaJWT, alterarSenha)
 
 module.exports = routes

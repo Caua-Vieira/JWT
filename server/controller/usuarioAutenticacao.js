@@ -112,7 +112,8 @@ async function alterarSenha(req, res) {
 
         return res.status(200).send({
             message: "Senha alterada com sucesso",
-            nome: buscarNomeUsuario.rows[0].nome
+            nome: buscarNomeUsuario.rows[0].nome,
+            token: token
         })
 
     } catch (error) {
