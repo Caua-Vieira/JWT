@@ -1,6 +1,6 @@
 const db = require("../config/database")
 const { criptografarSenha, validaSenha } = require("../security/bcrypt")
-const { criarJWT } = require("../security/jwt")
+const { criarJWT, resgatarDadosToken } = require("../security/jwt")
 
 async function cadastraUsuario(req, res) {
     try {
@@ -88,7 +88,42 @@ async function consultaLogin(req, res) {
     }
 }
 
+async function alterarSenha(req, res) {
+    try {
+        const {
+            confirmacaoSenha,
+            token
+        } = req.body
+
+        const dadosToken = resgatarDadosToken(token)
+        const idUsuario = dadosToken.idUsuario
+
+        const senhaCriptografada = await criptografarSenha(confirmacaoSenha)
+
+        await db.query(`
+        UPDATE usuarios
+        SET senha = '${senhaCriptografada}'
+        WHERE id = ${idUsuario}
+        `)
+
+        const buscarNomeUsuario = await db.query(`
+        SELECT nome FROM usuarios WHERE id = ${idUsuario}    
+        `)
+
+        return res.status(200).send({
+            message: "Senha alterada com sucesso",
+            nome: buscarNomeUsuario.rows[0].nome
+        })
+
+    } catch (error) {
+        return res.status(500).send({
+            message: "Ocorreu um erro ao tentar alterar senha: " + error.message
+        })
+    }
+}
+
 module.exports = {
     cadastraUsuario,
-    consultaLogin
+    consultaLogin,
+    alterarSenha
 }

@@ -2,12 +2,10 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
-import Login from './pages/login';
+import UsuarioAutenticacao from './pages/usuarioAutenticacao';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Dashboard from './pages/dashboard/dashboard';
-import AlterarSenha from './pages/dashboard/components/alterarSenha';
-
 
 function App() {
   return (
@@ -17,11 +15,12 @@ function App() {
       />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Login />} />
+          <Route path="/" element={<Navigate to="/usuario/autenticacao/login" replace />} />
+
+          <Route path="/usuario/autenticacao/:tipoAutenticacao" element={<UsuarioAutenticacao />} />
 
           <Route path='/dashboard/:nomeUsuario' element={<Dashboard />} />
 
-          <Route path='/alterar/senha' element={<AlterarSenha />} />
         </Routes>
       </BrowserRouter>
     </>

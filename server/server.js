@@ -3,7 +3,7 @@ const app = express()
 
 const port = 8000
 
-const routes = require("./routes/login.routes")
+const routes = require("./routes/usuarioAutenticacao.routes")
 const routesDashboard = require("./routes/dashboard/dashboard.routes")
 const routesEnvioEmail = require("./routes/security/envioEmail.routes")
 

@@ -13,15 +13,16 @@ function criarJWT(idUsuario) {
 function verificaJWT(req, res, next) {
     try {
         const authorization = req.headers.authorization
-
+        console.log(authorization)
         if (!authorization) {
+            console.log("aqui")
             return res.status(403).send({
                 message: "Token inválido, faça o login novamente"
             })
         }
-
         jwt.verify(authorization, process.env.CHAVE_JWT, function (erro) {
             if (erro) {
+                console.log(2)
                 return res.status(403).send({
                     message: "Token inválido, faça o login novamente"
                 })

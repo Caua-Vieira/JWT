@@ -64,24 +64,6 @@ function Dashboard() {
             })
     }
 
-    function enviaEmailConfirmacao() {
-        axios.post(`http://localhost:8000/envia/email/confirmacao`, {
-            email
-        }, {
-            headers: {
-                Authorization: token
-            }
-        }).then(function (resposta) {
-            toast.success(resposta.data.message);
-        }).catch(function (erro) {
-            if (erro.response.status === 403) {
-                toast.error(erro.response.data.message)
-                navigate("/")
-            } else {
-                toast.error(erro.response.data.message)
-            }
-        })
-    }
 
     useEffect(() => {
         buscaInfosUsuario()

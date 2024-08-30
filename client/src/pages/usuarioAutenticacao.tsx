@@ -3,17 +3,21 @@ import { useEffect, useState } from "react"
 import { Card, Col, Container, Form, Row } from "react-bootstrap"
 import { useNavigate, useParams } from "react-router-dom"
 import { toast } from "react-toastify"
+import Cookies from 'js-cookie';
 
-function Login() {
+function UsuarioAutenticacao() {
 
     const [nomeBotao, setNomeBotao] = useState<string>("Cadastrar")
-    const [mostraParaLogin, setMostraParaLogin] = useState<boolean>(true)
-    const [mostraParaCadastro, setMostraParaCadastro] = useState<boolean>(false)
+    const [mostraParaLogin, setMostraParaLogin] = useState<boolean>(false)
+    const [mostraParaCadastro, setMostraParaCadastro] = useState<boolean>(true)
+    const [mostraAlteracaoSenha, setMostraAlteracaoSenha] = useState<boolean>(true)
     const [nome, setNome] = useState<string>()
     const [senha, setSenha] = useState<string>()
     const [email, setEmail] = useState<string>()
+    const [confirmacaoSenha, setConfirmacaoSenha] = useState<string>()
 
     const navigate = useNavigate()
+    const { tipoAutenticacao } = useParams()
 
     function cadastrarUsuario() {
         if (!nome || !senha || !email) {
@@ -51,6 +55,49 @@ function Login() {
             })
     }
 
+    const token = Cookies.get('tokenAcesso');
+
+    function alterarSenha() {
+
+        if (!senha || !confirmacaoSenha) {
+            return toast.info("Preencha todos os campos para alterar senha")
+        } else if (senha !== confirmacaoSenha) {
+            return toast.info("As senhas são diferentes")
+        }
+        console.log(token)
+        axios.put(`http://localhost:8000/alterar/senha`, {
+            confirmacaoSenha,
+            token
+        }, {
+            headers: {
+                Authorization: token
+            }
+        }).then(function (resposta) {
+            toast.success(resposta.data.message)
+            navigate(`/dashboard/${resposta.data.nome}`)
+        }).catch(function (erro) {
+            if (erro.response.status === 403) {
+                toast.error("Tempo para alteração excedido, envie um email de confirmação novamente", {
+                    autoClose: 5000
+                });
+                navigate("/")
+            } else {
+                toast.error(erro.response.data.message)
+                setSenha("")
+                setConfirmacaoSenha("")
+            }
+        })
+    }
+
+    useEffect(() => {
+        if (tipoAutenticacao === 'alterarSenha') {
+            setMostraAlteracaoSenha(false)
+            setMostraParaCadastro(true)
+            setMostraParaLogin(true)
+            setNomeBotao("Confirmar Alteração")
+        }
+    }, [])
+
     return (
         <>
 
@@ -59,8 +106,12 @@ function Login() {
                     <Col xs={12} sm={8} md={6} lg={5}>
                         <Card className="p-4">
                             <Card.Body>
-                                <h4 className="text-center">{mostraParaCadastro === false ? 'Cadastro' : 'Acesso'}</h4>
-
+                                <h4 className="text-center">{mostraParaCadastro === false
+                                    ? 'Cadastro'
+                                    : mostraParaLogin === false
+                                        ? 'Acesso'
+                                        : 'Altere sua senha'}
+                                </h4>
                                 <Form>
                                     <Row className="mt-3">
                                         <div className="form-group" hidden={mostraParaCadastro}>
@@ -78,7 +129,7 @@ function Login() {
                                     </Row>
 
                                     <Row className="mt-3">
-                                        <div className="form-group">
+                                        <div className="form-group" hidden={!mostraAlteracaoSenha}>
                                             <label className="form-label">Nome</label>
                                             <input
                                                 type="text"
@@ -101,12 +152,32 @@ function Login() {
                                                 placeholder="Insira sua senha"
                                                 value={senha}
                                                 onKeyDown={(e) => {
-                                                    if (e.key === 'Enter') {
+                                                    if (e.key === 'Enter' && mostraAlteracaoSenha) {
                                                         consultaLogin()
                                                     }
                                                 }}
                                                 onChange={(e) => {
                                                     setSenha(e.target.value)
+                                                }}
+                                            />
+                                        </div>
+                                    </Row>
+
+                                    <Row className="mt-3">
+                                        <div className="form-group" hidden={mostraAlteracaoSenha}>
+                                            <label className="form-label">Nova Senha</label>
+                                            <input
+                                                type="password"
+                                                className="form-control"
+                                                placeholder="Confirme sua nova senha"
+                                                value={confirmacaoSenha}
+                                                onChange={(e) => {
+                                                    setConfirmacaoSenha(e.target.value)
+                                                }}
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Enter') {
+                                                        alterarSenha()
+                                                    }
                                                 }}
                                             />
                                         </div>
@@ -119,8 +190,10 @@ function Login() {
                                             onClick={() => {
                                                 if (nomeBotao === 'Cadastrar') {
                                                     cadastrarUsuario()
-                                                } else {
+                                                } else if (nomeBotao === 'Login') {
                                                     consultaLogin()
+                                                } else {
+                                                    alterarSenha()
                                                 }
                                             }}
                                         >
@@ -174,4 +247,4 @@ function Login() {
     )
 }
 
-export default Login
+export default UsuarioAutenticacao
