@@ -1,8 +1,4 @@
-import axios from "axios";
-import { useState } from "react";
-import { Button, Container, Form, Modal, Row, Spinner } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { Modal, Spinner } from "react-bootstrap";
 
 interface ModalCarregandoProps {
     isOpen: boolean;
