@@ -20,12 +20,14 @@ const ModalEnvioEmail: React.FC<ModalEnvioEmailProps> = ({
     const [email, setEmail] = useState<string>()
     const [processando, setProcessando] = useState<boolean>(false)
     const [mostraModalCarregando, setMostraModalCarregando] = useState<boolean>(false)
+    const [ocultaModal, setOcultaModal] = useState<boolean>(false)
 
     const navigate = useNavigate()
 
     function enviaEmailConfirmacao() {
         setProcessando(true)
         setMostraModalCarregando(true)
+        setOcultaModal(true)
         axios.post(`http://localhost:8000/envia/email/confirmacao`, {
             email,
             token
@@ -47,6 +49,7 @@ const ModalEnvioEmail: React.FC<ModalEnvioEmailProps> = ({
         }).finally(function () {
             setProcessando(false)
             setMostraModalCarregando(false)
+            setOcultaModal(false)
         })
     }
 
@@ -59,6 +62,7 @@ const ModalEnvioEmail: React.FC<ModalEnvioEmailProps> = ({
                 onShow={() => {
                     setEmail("")
                 }}
+                hidden={ocultaModal}
             >
 
                 <Modal.Header className="bg-white justify-content-center">
